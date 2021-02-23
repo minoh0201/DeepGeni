@@ -61,8 +61,8 @@ class Experimentor(object):
         self.num_GANs = None
         self.aug_rates = None
         self.aug_name = None
-        self.X_train_augs = None
-        self.y_train_augs = None
+        self.X_train_augs = []
+        self.y_train_augs = []
 
         # Set saving path
         self.result_path = os.path.join(os.getcwd(), 'results', self.name)
