@@ -284,8 +284,11 @@ class CWGANGP():
 
         gen = Conv2DTranspose(1,(1, 128), strides=(1, 2), padding='same', use_bias=False)(gen)
         
-        crop = gen.shape[2] - self.img_cols
-        #gen = Cropping2D( cropping=( (0,0),(0, crop) ), data_format="channels_last")(gen)
+        # crop = gen.shape[2] - self.img_cols
+        # gen = Cropping2D( cropping=( (0,0),(0, crop) ), data_format="channels_last")(gen)
+
+        if self.img_cols == 64:
+            gen = Cropping2D( cropping=( (0,0),(0, 192) ), data_format="channels_last")(gen)
 
         model = Model(inputs = [noise, label], outputs = gen)
         
