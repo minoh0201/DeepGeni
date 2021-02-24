@@ -262,8 +262,8 @@ class Experimentor(object):
         res = []
 
         for i in range(self.num_studies):
-            for aug_rate in self.aug_rates:
-                print(f'\nRun {i}, Aug_rate: {aug_rate}')
+            for j in range(len(self.aug_rates)):
+                print(f'\nRun {i}, Aug_rate: {self.aug_rates[j]}')
                 for clf, clf_name in zip(self.classifiers, self.classifier_names):
                     
                     # Get best params from training data
@@ -272,7 +272,7 @@ class Experimentor(object):
                     best_est = copy.deepcopy(clf.best_estimator_)
 
                     # Fit on augmented training data
-                    best_est.fit(self.X_train_augs[i][aug_rate], self.y_train_augs[i][aug_rate])
+                    best_est.fit(self.X_train_augs[i][j], self.y_train_augs[i][j])
 
                     # Test on test data
                     y_pred = best_est.predict(self.X_tests[i])
@@ -288,7 +288,7 @@ class Experimentor(object):
                     pre = round(precision_score(self.y_tests[i], y_pred), 3)
                     f1 = round(f1_score(self.y_tests[i], y_pred), 3)
 
-                    res.append([self.studies[i], aug_rate, clf_name, auroc, auprc, acc, rec, pre, f1])
+                    res.append([self.studies[i], self.aug_rates[j], clf_name, auroc, auprc, acc, rec, pre, f1])
 
         res_df = pd.DataFrame(res, columns=res_columns)
 
