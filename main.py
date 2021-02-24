@@ -75,7 +75,9 @@ if __name__ == "__main__":
                                     sample_interval=2000,
                                     save_all_data=False)
 
-        exp.ae(augmented_training=True, aug_rate_idx=4)
+        # AE
+        dims=[128, 64]
+        exp.ae(dims=dims, patience=30, augmented_training=True, aug_rate_idx=4)
         exp.classify()
         exp.classify_with_DBG()
 
