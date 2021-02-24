@@ -60,6 +60,9 @@ if __name__ == "__main__":
 
     if args.expname == "FS-DBG-AE":
         # Aug and AE
+        exp = Experimentor(Xs=Xs, ys=ys, studies=studies, name=args.expname, feature_selection=True, num_max_features=256)
+        aug_rates = [0.5, 1, 2, 4, 8, 16]
+
         exp.viz_wss()
         exp.num_clusters = [5, 5, 5, 5]
         exp.num_GANs = [5, 7, 7, 9]
@@ -78,10 +81,10 @@ if __name__ == "__main__":
 
     if args.expname == "FS-AE-DBG":
         # AE and Aug
-        dims=[128, 64]    
+        dims=[128, 64]
         exp = Experimentor(Xs=Xs, ys=ys, studies=studies, name=args.expname, feature_selection=True, num_max_features=256)
         exp.ae(dims=dims, patience=30)
-        
+
         exp.viz_wss()
         exp.num_clusters = [6, 4, 5, 7]
         exp.num_GANs = [2, 7, 5, 5]
