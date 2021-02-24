@@ -263,7 +263,7 @@ class Experimentor(object):
         print(f"--- Classified in {round(time.time() - start_time, 2)} seconds ---")
     # End of def classify()
 
-    def classify_with_DBG(self):
+    def classify_with_DBG(self, aug_rate_idx=None):
         # Time stamp
         start_time = time.time()
         
@@ -272,6 +272,12 @@ class Experimentor(object):
 
         for i in range(self.num_studies):
             for j in range(len(self.aug_rates)):
+
+                # Escape if aug_rate_idx is specified
+                if aug_rate_idx != None:
+                    if j != aug_rate_idx:
+                        continue
+
                 print(f'\nRun {i}, Aug_rate: {self.aug_rates[j]}')
                 for clf, clf_name in zip(self.classifiers, self.classifier_names):
                     

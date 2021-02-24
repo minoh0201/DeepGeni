@@ -79,7 +79,7 @@ if __name__ == "__main__":
         dims=[128, 64]
         exp.ae(dims=dims, patience=30, augmented_training=True, aug_rate_idx=4)
         exp.classify()
-        exp.classify_with_DBG()
+        exp.classify_with_DBG(aug_rate_idx=4)
 
     if args.expname == "FS-AE-DBG":
         # AE and Aug
