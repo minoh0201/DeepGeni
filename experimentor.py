@@ -119,12 +119,19 @@ class Experimentor(object):
         ]
     # End of def __init__()
 
-    def ae(self, dims = [256], epochs=3000, batch_size=128, verbose=2, loss='mean_squared_error', patience=30, val_rate=0.2):
+    def ae(self, dims = [256], epochs=3000, batch_size=128, verbose=2, loss='mean_squared_error', patience=30, val_rate=0.2, augmented_training=False):
         # Time stamp
         start_time = time.time()
 
+        if augmented_training:
+            X_trains = self.X_train_augs
+            y_trains = self.y_train_augs
+        else:
+            X_trains = self.X_trains
+            y_trains = self.y_trains
+
         # insert input shape into dimension list
-        dims.insert(0, self.X_trains[0].shape[1])
+        dims.insert(0, X_trains[0].shape[1])
 
         for i in range(self.num_studies):
             print(f"\n===== Learning AE for run {i+1}/{self.num_studies} =====\n")
@@ -139,7 +146,7 @@ class Experimentor(object):
                      ModelCheckpoint(modelName, monitor='val_loss', mode='min', verbose=1, save_best_only=True)]
 
             # spliting the training set into the inner-train and the inner-test set (validation set)
-            X_inner_train, X_inner_test, y_inner_train, y_inner_test = train_test_split(self.X_trains[i], self.y_trains[i], test_size=val_rate, random_state=0, stratify=self.y_trains[i])
+            X_inner_train, X_inner_test, y_inner_train, y_inner_test = train_test_split(X_trains[i], y_trains[i], test_size=val_rate, random_state=0, stratify=y_trains[i])
        
             # create autoencoder model
             self.autoencoder, self.encoder = DNN_models.autoencoder(dims)
@@ -163,6 +170,8 @@ class Experimentor(object):
             # applying the learned encoder into the whole training and the test set.
             self.X_trains[i] = self.encoder.predict(self.X_trains[i])
             self.X_tests[i] = self.encoder.predict(self.X_tests[i])
+            if augmented_training:
+                self.X_train_augs[i] = self.encoder.predict(self.X_train_augs[i])
         
         print(f"--- AE training finished in {round(time.time() - start_time, 2)} seconds ---")
     # End of def ae()
@@ -293,9 +302,9 @@ class Experimentor(object):
         res_df = pd.DataFrame(res, columns=res_columns)
 
         # Save results
-        res_df.to_csv(os.path.join(self.result_path, 'res.csv'), index=False)
-        res_df.groupby(by="Clf").mean().round(3).to_csv(os.path.join(self.result_path, 'res_avg.csv'))
-        res_df.groupby(by="Clf").std().round(3).to_csv(os.path.join(self.result_path, 'res_std.csv'))
+        res_df.to_csv(os.path.join(self.result_path, 'DBG_res.csv'), index=False)
+        res_df.groupby(by="Clf").mean().round(3).to_csv(os.path.join(self.result_path, 'DBG_res_avg.csv'))
+        res_df.groupby(by="Clf").std().round(3).to_csv(os.path.join(self.result_path, 'DBG_res_std.csv'))
 
         print(f"--- Classified in {round(time.time() - start_time, 2)} seconds ---")
     # End of def classify()
