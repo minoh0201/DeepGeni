@@ -75,7 +75,7 @@ if __name__ == "__main__":
                                     sample_interval=2000,
                                     save_all_data=False)
 
-        exp.ae(augmented_training=True)
+        exp.ae(augmented_training=True, aug_rate_idx=4)
         exp.classify()
         exp.classify_with_DBG()
 
@@ -90,7 +90,7 @@ if __name__ == "__main__":
         exp.num_GANs = [2, 7, 5, 5]
 
         aug_rates = [0.5, 1, 2, 4, 8, 16]
-        
+
         # call augmentor  
         wGAN_augmentor.deepbiogen(exp = exp, 
                                     aug_rates=aug_rates, 

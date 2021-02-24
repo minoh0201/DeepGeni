@@ -119,19 +119,12 @@ class Experimentor(object):
         ]
     # End of def __init__()
 
-    def ae(self, dims = [256], epochs=3000, batch_size=128, verbose=2, loss='mean_squared_error', patience=30, val_rate=0.2, augmented_training=False):
+    def ae(self, dims = [256], epochs=3000, batch_size=128, verbose=2, loss='mean_squared_error', patience=30, val_rate=0.2, augmented_training=False, aug_rate_idx=None):
         # Time stamp
         start_time = time.time()
 
-        if augmented_training:
-            X_trains = self.X_train_augs
-            y_trains = self.y_train_augs
-        else:
-            X_trains = self.X_trains
-            y_trains = self.y_trains
-
         # insert input shape into dimension list
-        dims.insert(0, X_trains[0].shape[1])
+        dims.insert(0, self.X_trains[0].shape[1])
 
         for i in range(self.num_studies):
             print(f"\n===== Learning AE for run {i+1}/{self.num_studies} =====\n")
@@ -145,8 +138,15 @@ class Experimentor(object):
             callbacks = [EarlyStopping(monitor='val_loss', patience=patience, mode='min', verbose=1),
                      ModelCheckpoint(modelName, monitor='val_loss', mode='min', verbose=1, save_best_only=True)]
 
+            if augmented_training:
+                X_train = self.X_train_augs[i][aug_rate_idx]
+                y_train = self.y_train_augs[i][aug_rate_idx]
+            else:
+                X_train = self.X_trains[i]
+                y_train = self.y_trains[i]
+
             # spliting the training set into the inner-train and the inner-test set (validation set)
-            X_inner_train, X_inner_test, y_inner_train, y_inner_test = train_test_split(X_trains[i], y_trains[i], test_size=val_rate, random_state=0, stratify=y_trains[i])
+            X_inner_train, X_inner_test, y_inner_train, y_inner_test = train_test_split(X_train, y_train, test_size=val_rate, random_state=0, stratify=y_train)
        
             # create autoencoder model
             self.autoencoder, self.encoder = DNN_models.autoencoder(dims)
@@ -171,7 +171,7 @@ class Experimentor(object):
             self.X_trains[i] = self.encoder.predict(self.X_trains[i])
             self.X_tests[i] = self.encoder.predict(self.X_tests[i])
             if augmented_training:
-                self.X_train_augs[i] = self.encoder.predict(self.X_train_augs[i])
+                self.X_train_augs[i][aug_rate_idx] = self.encoder.predict(self.X_train_augs[i][aug_rate_idx])
         
         print(f"--- AE training finished in {round(time.time() - start_time, 2)} seconds ---")
     # End of def ae()
