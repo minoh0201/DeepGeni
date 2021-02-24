@@ -88,6 +88,9 @@ if __name__ == "__main__":
         exp.viz_wss()
         exp.num_clusters = [6, 4, 5, 7]
         exp.num_GANs = [2, 7, 5, 5]
+
+        aug_rates = [0.5, 1, 2, 4, 8, 16]
+        
         # call augmentor  
         wGAN_augmentor.deepbiogen(exp = exp, 
                                     aug_rates=aug_rates, 
