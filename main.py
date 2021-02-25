@@ -13,6 +13,7 @@ if __name__ == "__main__":
     parser.add_argument("--lsocv", help="Leave one study out cross validation", action='store_true')
     parser.add_argument("--cv", help="cross validation", action='store_true')
     parser.add_argument("--expname", help="Experiment name to create new directory under the results", type=str, default="baseline")
+    parser.add_argument("--ae_dims", help="dimensions of autoencoder", type=str, default=None)
 
     args = parser.parse_args()
     print(args)
@@ -76,7 +77,14 @@ if __name__ == "__main__":
                                     save_all_data=False)
 
         # AE
-        dims=[128, 64]
+        if args.ae_dims:
+            dims = [int(x) for x in args.ae_dims.split(',')]
+            exp.result_path = os.path.join(exp.result_path, 'AE_' + '_'.join([str(x) for x in dims]))
+            if not os.path.exists(exp.result_path):
+                os.makedirs(exp.result_path)
+        else:
+            dims=[128, 64]
+
         exp.ae(dims=dims, patience=30, augmented_training=True, aug_rate_idx=4)
         exp.classify()
         exp.classify_with_DBG(aug_rate_idx=4)
