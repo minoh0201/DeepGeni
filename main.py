@@ -102,9 +102,10 @@ if __name__ == "__main__":
         else:
             dims=[128, 64]
 
-        exp.ae(dims=dims, patience=30, augmented_training=True, aug_rate_idx=0, latent_act=args.l_act)
+        aug_rate_idx = 4
+        exp.ae(dims=dims, patience=30, augmented_training=True, aug_rate_idx=aug_rate_idx, latent_act=args.l_act)
         exp.classify()
-        exp.classify_with_DBG(aug_rate_idx=0)
+        exp.classify_with_DBG(aug_rate_idx=aug_rate_idx)
 
     if args.expname == "FS-AE-DBG":
         # AE and Aug
