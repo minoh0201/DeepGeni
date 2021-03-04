@@ -10,10 +10,11 @@ if __name__ == "__main__":
 
     # Parse arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("--lsocv", help="Leave one study out cross validation", action='store_true')
+    parser.add_argument("--loscv", help="Leave one study out cross validation", action='store_true')
     parser.add_argument("--cv", help="cross validation", action='store_true')
     parser.add_argument("--expname", help="Experiment name to create new directory under the results", type=str, default="baseline")
     parser.add_argument("--ae_dims", help="dimensions of autoencoder", type=str, default=None)
+    parser.add_argument("--l_act", help="activation function in latent layer", action='store_true')
 
     args = parser.parse_args()
     print(args)
@@ -59,6 +60,22 @@ if __name__ == "__main__":
     
     # exp.classify_with_DBG()
 
+    if args.expname =="FS-AE":
+        # FS-AE
+        num_max_features = 256
+        exp = Experimentor(Xs=Xs, ys=ys, studies=studies, name=args.expname, feature_selection=True, num_max_features=num_max_features)
+
+        if args.ae_dims:
+                dims = [int(x) for x in args.ae_dims.split(',')]
+                exp.result_path = os.path.join(exp.result_path, 'AE_' + '_'.join([str(x) for x in dims]))
+                if not os.path.exists(exp.result_path):
+                    os.makedirs(exp.result_path)
+        else:
+            dims=[128, 64]
+            
+        exp.ae(dims=dims, patience=30, latent_act=args.l_act)
+        exp.classify()
+
     if args.expname == "FS-DBG-AE":
         # Aug and AE
         exp = Experimentor(Xs=Xs, ys=ys, studies=studies, name=args.expname, feature_selection=True, num_max_features=256)
@@ -85,7 +102,7 @@ if __name__ == "__main__":
         else:
             dims=[128, 64]
 
-        exp.ae(dims=dims, patience=30, augmented_training=True, aug_rate_idx=0)
+        exp.ae(dims=dims, patience=30, augmented_training=True, aug_rate_idx=0, latent_act=args.l_act)
         exp.classify()
         exp.classify_with_DBG(aug_rate_idx=0)
 

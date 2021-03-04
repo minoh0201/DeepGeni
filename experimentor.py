@@ -119,7 +119,7 @@ class Experimentor(object):
         ]
     # End of def __init__()
 
-    def ae(self, dims = [256], epochs=3000, batch_size=128, verbose=2, loss='mean_squared_error', patience=30, val_rate=0.2, augmented_training=False, aug_rate_idx=None):
+    def ae(self, dims = [256], epochs=3000, batch_size=128, verbose=2, loss='mean_squared_error', patience=30, val_rate=0.2, augmented_training=False, aug_rate_idx=None, latent_act=False):
         # Time stamp
         start_time = time.time()
 
@@ -149,7 +149,7 @@ class Experimentor(object):
             X_inner_train, X_inner_test, y_inner_train, y_inner_test = train_test_split(X_train, y_train, test_size=val_rate, random_state=0, stratify=y_train)
        
             # create autoencoder model
-            self.autoencoder, self.encoder = DNN_models.autoencoder(dims)
+            self.autoencoder, self.encoder = DNN_models.autoencoder(dims, latent_act=latent_act)
             self.autoencoder.summary()
 
             # compile model
