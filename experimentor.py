@@ -40,7 +40,7 @@ import DNN_models
 import config
 
 class Experimentor(object):
-    def __init__(self, name=None, Xs=None, ys=None, studies=None, feature_selection=False, num_max_features=256):
+    def __init__(self, name=None, Xs=None, ys=None, studies=None, feature_selection=False, num_max_features=256, features=None):
         self.name = name
         self.Xs = Xs
         self.ys = ys
@@ -63,6 +63,9 @@ class Experimentor(object):
         self.aug_name = None
         self.X_train_augs = []
         self.y_train_augs = []
+
+        # Interpretation
+        self.features_by_split = []
 
         # Set saving path
         self.result_path = os.path.join(os.getcwd(), 'results', self.name)
@@ -104,6 +107,10 @@ class Experimentor(object):
             self.y_trains.append(y_train)
             self.X_tests.append(X_test)
             self.y_tests.append(y_test)
+
+            # Append features
+            if features is not None:
+                self.features_by_split.append(features[model.get_support()])
 
         # Classifiers
         self.classifier_names = ["SVM", "RF", "NN"]
@@ -251,8 +258,13 @@ class Experimentor(object):
                 pre = round(precision_score(self.y_tests[i], y_pred), 3)
                 f1 = round(f1_score(self.y_tests[i], y_pred), 3)
 
-                res.append([self.studies[i], clf_name, auroc, auprc, acc, rec, pre, f1])
+                # ROC curve
+                fpr, tpr, _ = roc_curve(self.y_tests[i], y_prob[:, 1])
+                ROC_filename = f"run{i}_roc_" + clf_name + ".csv"
+                pd.DataFrame({'fpr':fpr, 'tpr':tpr, 'auc':auroc}).to_csv(os.path.join(self.result_path, ROC_filename))
 
+                res.append([self.studies[i], clf_name, auroc, auprc, acc, rec, pre, f1])
+                
         res_df = pd.DataFrame(res, columns=res_columns)
 
         # Save results

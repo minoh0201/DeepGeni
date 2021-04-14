@@ -24,14 +24,16 @@ if __name__ == "__main__":
     Xs, ys, studies = data_loader.split_studies(X=X, y=y, ids=ids)
 
     # Baseline without feature selection
-    #exp = Experimentor(Xs=Xs, ys=ys, studies=studies, name='baseline', feature_selection=False)
-    #exp.classify()
+    if args.expname =="Baseline":
+        exp = Experimentor(Xs=Xs, ys=ys, studies=studies, name='Baseline', feature_selection=False)
+        exp.classify()
 
-    # With feature selection
-    # num_max_features = 32
-    # args.expname = args.expname + '_' + str(num_max_features)
-    # exp = Experimentor(Xs=Xs, ys=ys, studies=studies, name=args.expname, feature_selection=True, num_max_features=num_max_features)
-    # exp.classify()
+    #With feature selection
+    if args.expname =="FS":
+        num_max_features = 256
+        args.expname = args.expname + '_' + str(num_max_features)
+        exp = Experimentor(Xs=Xs, ys=ys, studies=studies, name=args.expname, feature_selection=True, num_max_features=num_max_features)
+        exp.classify()
 
     # Simple AE
     # dims=[128, 64]
@@ -78,7 +80,7 @@ if __name__ == "__main__":
 
     if args.expname == "FS-DBG-AE":
         # Aug and AE
-        exp = Experimentor(Xs=Xs, ys=ys, studies=studies, name=args.expname, feature_selection=True, num_max_features=256)
+        exp = Experimentor(Xs=Xs, ys=ys, studies=studies, name=args.expname, feature_selection=True, num_max_features=256, features=features)
         aug_rates = [0.5, 1, 2, 4, 8, 16]
 
         exp.viz_wss()
@@ -94,7 +96,7 @@ if __name__ == "__main__":
                                     save_all_data=False)
 
         # AE
-        if args.ae_dims:
+        if args.ae_dims: 
             dims = [int(x) for x in args.ae_dims.split(',')]
             exp.result_path = os.path.join(exp.result_path, 'AE_' + '_'.join([str(x) for x in dims]))
             if not os.path.exists(exp.result_path):
