@@ -1,6 +1,6 @@
 # DeepGeni
 
-Deep generalized interpretable autoencoder
+Deep generalized interpretable autoencoder that learns a latent representation of microbiome profiles for better prediction of immune checkpoint inhibitors response and extracts the most informative microbial taxa involved in modulation of the response
 
 ![image](https://user-images.githubusercontent.com/19569318/196018569-80e936ed-fb30-4a48-ae11-adb787a39efa.png)
 
