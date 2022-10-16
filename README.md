@@ -18,11 +18,11 @@ git clone [REPO URL]
 ```
 2. Create a virtual environment
 ```
-conda create -n deepbiogen python=3.6
+conda create -n deepgeni python=3.6
 ```
 3. Activate the virtual environment
 ```
-conda activate deepbiogen
+conda activate deepgeni
 ```
 4. Install required packages
 ```
@@ -32,3 +32,26 @@ pip install -r requirements.txt
 ```
 python main.py -h
 ```
+
+## Experiment guide
+
+1. Run baseline (No FS) experiment
+```
+python main.py --expname Baseline
+```
+
+2. Run Feature-selection-only (FS only) experiment
+```
+python main.py --expname FS
+```
+
+3. Run Feature selection and auto-encoding (FS + AE) experiment
+```
+python main.py --expname FS-AE
+```
+
+4. Run DeepGeni (FS + DBG + AE) experiment
+```
+python main.py --expname FS-DBG-AE
+```
+
