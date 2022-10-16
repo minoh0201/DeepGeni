@@ -1,8 +1,5 @@
 # File names
 OTUS = "log10_relative_OTU_all.csv"
-#OTUS = "log2_relative_OTU_all.csv"
-#OTUS = "log2_relative_OTU.csv"
-#OTUS = "log10_relative_OTU.csv"
 LABELS = "class_labels.csv"
 
 # Hyper-parameter grid for training classifiers
